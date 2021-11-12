@@ -25,6 +25,7 @@ int minimum_spanning_weight(int **graph,int n,int m)
                 u=j;
             }
         }
+        
         visited[u]=1;
         for(int j=0;j<n;j++)
         {
