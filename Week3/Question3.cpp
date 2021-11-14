@@ -1,29 +1,55 @@
 #include <bits/stdc++.h>
+
+#define fastio                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL)
+
+#define endl "\n"
+
 using namespace std;
-string find_duplicates(vector<int> arr)
-{
-    for (int i = 0; i < arr.size() - 1; i++)
-    {
-        if (arr[i] == arr[i + 1])
-            return "YES";
-    }
-    return "NO";
+
+void printArray(int* arr, int n){
+    for(int i = 0; i < n; i++)
+        cout<<arr[i]<<" ";
 }
+
+void SelectionSort(int* arr, int n){
+    int comparisons=0,swaps=0;
+    for(int i = 0; i < n-1; i++){
+        swaps++;
+        for(int j=i+1;j<n;j++){
+            comparisons++;
+            if(arr[i]>arr[j]){
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+    printArray(arr,n);
+    cout<<endl<<"Comparisons: "<<comparisons<<endl;
+    cout<<"Swaps: "<<swaps<<endl;
+}
+
 int main()
 {
-    // ios_base::sync_with_stdio(0);
-    // cin.tie(NULL);
-    int t, n;
-    cin >> t;
-    while (t--)
-    {
-        cin >> n;
-        vector<int> arr(n);
-        for (int i = 0; i < n; i++)
-            cin >> arr[i];
-        sort(arr.begin(), arr.end());
-        cout << find_duplicates(arr) << endl;
+    fastio;
+    int t;
+    ifstream file;
+    file.open("input_1.txt");
+    if(!file){
+        cout<<"File not found";
+        return 0;
     }
-
+    file>>t;
+    while(t--){
+        int n;
+        file>>n;
+        int arr[n];
+        for (int i = 0; i < n; i++)
+            file>>arr[i];
+        SelectionSort(arr,n);
+    }
+    file.close();
     return 0;
 }
