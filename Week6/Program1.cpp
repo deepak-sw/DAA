@@ -1,37 +1,55 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+
+#define fastio                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL)
+
+#define endl "\n"
+
 using namespace std;
-bool pathexists(int graph[][10],int source,int destination,int n)
-{
-    bool visited[n];
-    for(int i=0;i<n;i++)
-    {
-        visited[i]=false;
-    }
-    stack<int> s;
-    s.push(source);
-    visited[source]=true;
-    while(!s.empty())
-    {
-        int top=s.top();
-        s.pop();
-        if(top==destination)
-        {
-            return true;
-        }
-        for(int i=0;i<n;i++)
-        {
-            if(graph[top][i]==1 && visited[i]==false)
-            {
-                s.push(i);
-                visited[i]=true;
+
+bool isPathDFS(vector<vector<int>>& graphmat, int source, int des, int size){
+    bool visited[size];
+    stack<int> st;
+    visited[source-1] = true;
+    st.push(source-1);
+    while(!st.empty()){
+        int cr = st.top();
+        st.pop();
+        if(cr+1 == des)
+                return true;
+        for(int i=0;i<size;i++){
+            if(graphmat[source][i] == 1 && !visited[i]){
+               visited[i] = true;
+               st.push(i);
             }
         }
     }
     return false;
 }
-int main(){
-    // ios_base::sync_with_stdio(false);
-    // cin.tie(NULL);
-    
-    return 0;
+
+int main()
+{
+    fastio;
+    ifstream file;
+    file.open("input_1.txt");
+    if(!file){
+        cout<<"File not found";
+        return 0;
+    }
+    int v;
+    file>>v;
+    vector<vector<int>> graphmat(v,vector<int>(v));
+    for(int i=0;i<v;i++)
+        for(int j=0;j<v;j++)
+            file>>graphmat[i][j];
+    int source,des;
+    file>>source;
+    file>>des;
+    // cout<<(bool)dfs(graphmat,source,des,v)<<endl;
+    if(isPathDFS(graphmat,source,des,v))
+        cout<<"Yes path exixts"<<endl;
+    else
+        cout<<"No such path exixts"<<endl;
+    // return 0;
 }
