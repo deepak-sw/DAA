@@ -1,48 +1,67 @@
 #include <bits/stdc++.h>
+
+#define fastio                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL)
+
+#define endl "\n"
+
 using namespace std;
 
-int partition(int arr[], int l, int r);
-int kthSmallest(int arr[], int l, int r, int k)
-{
-    if (k > 0 && k <= r - l + 1)
-    {
-        int pos = partition(arr, l, r);
-
-        if (pos - l == k - 1)
-            return arr[pos];
-        if (pos - l > k - 1)
-            return kthSmallest(arr, l, pos - 1, k);
-        return kthSmallest(arr, pos + 1, r, k - pos + l - 1);
-    }
-
-    return INT_MAX;
+void swap(int* arr, int i, int j){
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
 }
 
-void swap(int *a, int *b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-int partition(int arr[], int l, int r)
-{
-    int x = arr[r], i = l;
-    for (int j = l; j <= r - 1; j++)
-    {
-        if (arr[j] <= x)
-        {
-            swap(&arr[i], &arr[j]);
+int part(int* arr, int l, int h){
+    int pivot_ele = arr[h],i=l;
+    for(int j=l; j <=h ; j++){
+        if(arr[j]<pivot_ele){
             i++;
+            swap(arr,j,i);
         }
     }
-    swap(&arr[i], &arr[r]);
+    swap(arr,h,i);
     return i;
 }
 
+int kthSmallest(int* arr, int l,int h, int k){
+    int p = part(arr,l,h);
+    if(p == k-1)
+        return arr[p];
+    else if(p<k-1)
+        return kthSmallest(arr,p+1,h,k);
+    else
+        return kthSmallest(arr,l,p-1,k);
+    return INT_MIN;
+}
+
+
 int main()
 {
-    int arr[] = {12, 3, 5, 7, 4, 19, 26};
-    int n = sizeof(arr) / sizeof(arr[0]), k = 3;
-    cout << "K'th smallest element is " << kthSmallest(arr, 0, n - 1, k);
+    fastio;
+    int t;
+    ifstream file;
+    file.open("input_3.txt");
+    if(!file){
+        cout<<"File not found!!";
+        return 0;
+    }
+    file>>t;
+    while(t--){
+        int n;
+        file>>n;
+        int arr[n];
+        for(int i=0; i<n; i++)
+            file>>arr[i];
+        int k;
+        file>>k;
+        int ans = kthSmallest(arr,0,n-1,k);
+        if(k<n)
+            cout<<ans<<endl;
+        else
+            cout<<"Not present"<<endl;
+    }
     return 0;
 }
