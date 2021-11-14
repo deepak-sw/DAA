@@ -1,32 +1,43 @@
 #include<bits/stdc++.h>
 using namespace std;
-int majority(int arr[], int n)
-{
-    int count = 1, maj_index = 0;
-    for (int i = 1; i < n; i++)
-    {
-        if (arr[maj_index] == arr[i])
-            count++;
-        else
-            count--;
-        if (count == 0)
-        {
-            maj_index = i;
-            count = 1;
+
+void findMaj(int arr[], int n) {
+    int maxcount = 0;
+    int index = -1;
+    for (int i = 0; i < n; i++) {
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (arr[i] == arr[j])
+                count++;
+        }
+        if (count > maxcount) {
+            maxcount = count;
+            index = i;
         }
     }
-    return arr[maj_index];
+    if (maxcount > n / 2)
+        // cout << "Majority Element => " << arr[index] << endl;
+        cout << "yes\n";
+    else
+        cout << "no\n";
 }
-int main(){
-    int N;
-    cout<<"Enter the size of the array: ";
-    cin>>N;
-    int arr[N];
-    cout<<"Enter the elements of the array: ";
-    for(int i=0;i<N;i++){
-        cin>>arr[i];
-    }
-    int n = sizeof(arr)/sizeof(arr[0]);
-    cout << "The majority element is " << majority(arr, n);
-    return 0;
+double findMedian(int a[], int n) {
+    sort(a, a + n);
+    if (n % 2 != 0)
+        return (double)a[n / 2];
+    return (double)(a[n - 1 / 2] + a[n / 2]) / 2.0;
+}
+
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("input_3.txt", "r", stdin);
+    freopen("output_3.txt", "w", stdout);
+#endif
+    int n;
+    cin >> n;
+    int arr[n];
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+    findMaj(arr, n);
+    cout << findMedian(arr, n) << endl;
 }
