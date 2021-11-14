@@ -1,54 +1,81 @@
 #include <bits/stdc++.h>
-using namespace std;
-void merge(int *arr, int l, int mid, int r, int* comp)
-{
-    int L[mid - l + 1];
-    int R[r - mid];
-    for (int i = 0; i < mid - l + 1; i++)
-        L[i] = arr[l + i];
-    for (int i = 0; i < r - mid; i++)
-        R[i] = arr[mid + 1 + i];
 
-    int i = 0, j = 0, k = l;
-    while (i < mid - l + 1 && j < r - mid)
-    {
-        if (L[i] <= R[j])
-            arr[k++] = L[i++];
-        else
-            arr[k++] = R[j++];
-        (*comp)++;
-    }
-    while (i < mid - l + 1)
-        arr[k++] = L[i++];
-    while (j < r - mid)
-        arr[k++] = R[j++];
+#define fastio                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL); \
+    cout.tie(NULL); \
+
+#define endl "\n"
+
+using namespace std;
+
+void printArray(int* arr, int n){
+    for(int i = 0; i < n; i++)
+        cout<<arr[i]<<" ";
 }
-void mergesort(int arr[], int l, int r, int* comp)
-{
-    if (l < r)
-    {
-        int mid = (l + r) / 2;
-        mergesort(arr, 0, mid - 1, comp);
-        mergesort(arr, mid + 1, r, comp);
-        merge(arr, l, mid, r, comp);
+
+int comparison=0,inversions=0;
+
+void Merge(int* arr, int l, int mid, int r){
+    int n1=mid-l+1,n2=r-mid;
+    int Leftarr[n1],Rightarr[n2],i,j,k;
+    for(i=0; i<n1; i++) Leftarr[i]=arr[l+i];
+    for(j=0; j<n2; j++) Rightarr[j] = arr[mid+1+j];
+    i=0;j=0;k=l;
+    while(i<n1 && j<n2){
+        if(Leftarr[i]<=Rightarr[j]){
+            comparison++;
+            arr[k] = Leftarr[i];
+            i++;
+        }
+        else{
+            comparison++;
+            arr[k] = Rightarr[j];
+            j++;
+            inversions += (mid+1) - (l+i);
+        }
+        k++;
+    }
+    while(i<n1){
+        arr[k++]=Leftarr[i++];
+    }
+    while(j<n2){ 
+        arr[k++]=Rightarr[j++];
+    }
+}
+
+void MergeSort(int* arr, int l, int h){
+    if(l<h){
+        int mid = l+(h-l)/2;
+        MergeSort(arr,l,mid);
+        MergeSort(arr,mid+1,h);
+        Merge(arr,l,mid,h);
     }
 }
 
 int main()
 {
-    // ios_base::sync_with_stdio(false);
-    // cin.tie(NULL);
-    int t, n;
-    cin >> t;
-    while (t--);
-    {
-        cin >> n;
-        int comp = 0;
+    fastio;
+    int t;
+    ifstream file;
+    file.open("input_1.txt");
+    if(!file){
+        cout<<"File not found";
+        return 0;
+    }
+    file>>t;
+    while(t--){
+        int n;
+        file>>n;
         int arr[n];
         for (int i = 0; i < n; i++)
-            cin >> arr[i];
-        mergesort(arr, 0, n-1, &comp);
-        cout<<comp;
+            file>>arr[i];
+        comparison=0,inversions=0;
+        MergeSort(arr,0,n-1);
+        printArray(arr,n);
+        cout<<endl<<"comparisons: "<<comparison<<endl;
+        cout<<"inversions: "<<inversions<<endl;
     }
+    file.close();
     return 0;
 }
