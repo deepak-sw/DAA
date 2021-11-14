@@ -1,74 +1,63 @@
 #include<bits/stdc++.h>
 using namespace std;
-int minimum_spanning_weight(int **graph,int n,int m)
-{
-    int *visited=new int[n];
-    int *parent=new int[n];
-    int *weight=new int[n];
-    for(int i=0;i<n;i++)
-    {
-        visited[i]=0;
-        parent[i]=-1;
-        weight[i]=INT_MAX;
-    }
-    visited[0]=1;
-    weight[0]=0;
-    for(int i=0;i<n-1;i++)
-    {
-        int min=INT_MAX;
-        int u=-1;
-        for(int j=0;j<n;j++)
-        {
-            if(visited[j]==0 && weight[j]<min)
-            {
-                min=weight[j];
-                u=j;
-            }
-        }
-        
-        visited[u]=1;
-        for(int j=0;j<n;j++)
-        {
-            if(visited[j]==0 && graph[u][j]!=0)
-            {
-                if(weight[j]>graph[u][j])
-                {
-                    weight[j]=graph[u][j];
-                    parent[j]=u;
-                }
-            }
-        }
-    }
-    int sum=0;
-    for(int i=0;i<n;i++)
-    {
-        sum+=weight[i];
-    }
-    return sum;
+
+int fp(vector<int>p, int i) {
+    if (p[i] < 0)
+        return i;
+    return fp(p, p[i]);
 }
-int main()
-{
-    int n,m;
-    cin>>n>>m;
-    int **graph=new int*[n];
-    for(int i=0;i<n;i++)
-    {
-        graph[i]=new int[n];
-    }
-    for(int i=0;i<n;i++)
-    {
-        for(int j=0;j<n;j++)
-        {
-            graph[i][j]=0;
+
+bool unionbweig(vector<int>& p, int u, int v) {
+    int pu = fp(p, u);
+    int pv = fp(p, v);
+    if (pu != pv) {
+        if (p[pu] < p[pv]) {
+            p[pu] += p[pv];
+            p[pv] = pu;
         }
+        else {
+            p[pv] += p[pu];
+            p[pu] = pv;
+        }
+        return true;
     }
-    for(int i=0;i<m;i++)
-    {
-        int u,v,w;
-        cin>>u>>v>>w;
-        graph[u][v]=w;
-        graph[v][u]=w;
+    return false;
+}
+int krus(vector<vector<int>>& v, int n) {
+    int ans = 0;
+    vector<pair<int, pair<int, int>>> g;
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            if (v[i][j] != 0)
+                g.push_back(make_pair(v[i][j], make_pair(i, j)));
+    sort(g.begin(), g.end());
+    vector<int>p(n, -1);
+    for (auto i : g) {
+        int u = i.second.first;
+        int v = i.second.second;
+        int w = i.first;
+        if (unionbweig(p, u, v))
+            ans = ans + w;
     }
-    cout<<minimum_spanning_weight(graph,n,m)<<endl;
-    return 0;
+    return ans;
+}
+
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("input_2.txt", "r", stdin);
+    freopen("output_2.txt", "w", stdout);
+#endif
+    int n, t;
+    cin >> n;
+    vector<vector<int>>v;
+    vector<int>vec;
+    for (int i = 0;i < n;i++) {
+        vec.clear();
+        for (int j = 0;j < n;j++) {
+            cin >> t;
+            vec.push_back(t);
+        }
+        v.push_back(vec);
+    }
+    cout << "Minimum spanning weight : " << krus(v, n);
 }
