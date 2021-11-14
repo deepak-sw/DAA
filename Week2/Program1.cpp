@@ -1,33 +1,59 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+
+#define fastio                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL);\
+    cout.tie(NULL)
+
+
+#define endl "\n"
+
 using namespace std;
+
+int Binary_search(int* arr, int l, int h,int key,int occurrence){
+    int mid,index=-1;
+    while(h>=l){
+        mid=(h+l)/2;
+        if(arr[mid]==key){
+            index=mid;
+            if(occurrence)
+                h= mid-1;
+            else
+                l= mid+1;
+        }else if(arr[mid]>key)
+            h=mid-1;
+        else if(arr[mid]<key)
+            l=mid+1;
+    }
+    return index;
+}
+
 int main()
 {
+    fastio;
     int t;
-    cin>>t;
-    while(t--)
-    {
-        int n;
-        cin>>n;
-        int flag=0;
-        int arr[n];
-        for(int i=0;i<n;i++)
-        {
-            cin>>arr[i];
-        }
-        for(int i=0;i<n-2;i++)
-        {
-            for(int j=i+1;j<n-1;j++)
-            {
-                int k=j+1;
-                if(arr[i]+arr[j]==arr[k])
-                {
-                    flag=1;
-                    cout<<"Sequence found: "<<i<<" "<<j<<" "<<k<<"\n";
-                }
-            }
-        }
-        if(flag==0)
-            cout<<"Sequence not found.\n";
+    ifstream file;
+    file.open("input_1.txt");
+    if(!file){
+        cout<<"File not found";
+        return 0;
     }
+    file>>t;
+    while(t--){
+        int n;
+        file>>n;
+        int arr[n];
+        for (int i = 0; i < n; i++)
+            file>>arr[i];
+        int key;
+        file>>key;
+        int first_occur = Binary_search(arr,0,n-1,key,1);
+        int last_occur = Binary_search(arr,0,n-1,key,0);
+        if(first_occur!=-1)
+            cout<<key<<"->"<<last_occur-first_occur+1<<endl;
+        else
+            cout<<"Key not present "<<key<<endl;
+    }
+    file.close();
     return 0;
 }
